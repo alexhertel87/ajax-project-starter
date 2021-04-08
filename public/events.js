@@ -23,7 +23,19 @@ window.addEventListener("DOMContentLoaded", () => {
       loading.innerHTML = "Loading...";
       getKitties();
    })
-   upVote.addEventListener("click", (e) => {
-      score.val
-   })
+    let scoreContainer = document.querySelector(".score-container");
+    scoreContainer.addEventListener("click", async (e) => {
+        if (e.target.id === "upvote" || e.target.id === "downvote") {
+            const response = await fetch(`/kitten/${e.target.id}`, {
+                method: "PATCH",
+                header: {
+                    "Content-Type": "application/json"
+                }
+            });
+            const json = await response.json();
+            if (response.ok) {
+                score.innerHTML = json.score;
+            }
+        }
+    })
 })
