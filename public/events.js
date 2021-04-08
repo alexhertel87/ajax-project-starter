@@ -35,7 +35,31 @@ window.addEventListener("DOMContentLoaded", () => {
             const json = await response.json();
             if (response.ok) {
                 score.innerHTML = json.score;
+            } else {
+               window.alert("Error Occurred. Please Try Again.")
             }
+
         }
     })
+   const form = document.querySelector(".comment-form")
+
+   form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const updateComments = async function (comment) {
+         const comments = await fetch('/kitten/comments', {
+            method: "POST",
+            header: {
+               "Content-Type": 'application/json'
+            },
+            body: JSON.stringify({
+               comment
+            })
+         })
+         const json = await response.json();
+         if (json.ok) {
+            addComment(json.comments)
+         }
+      }
+   })
 })
