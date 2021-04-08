@@ -4,6 +4,13 @@ window.addEventListener("DOMContentLoaded", () => {
    let score = document.querySelector(".score")
    let loading = document.querySelector(".loader");
 
+   function addError(json) {
+      let errorDiv = document.querySelector(".error")
+         errorDiv.innerHTML = json.message
+   }
+
+
+
    const getKitties = async function () {
       const response = await fetch("/kitten/image");
       const json = await response.json();
@@ -13,7 +20,7 @@ window.addEventListener("DOMContentLoaded", () => {
          catPic.setAttribute("src", json.src);
          loading.innerHTML = ""
       } else {
-         window.alert("Something Went Wrong. Please Try Again.")
+         addError(json)
       }
    }
    getKitties();
@@ -33,7 +40,7 @@ window.addEventListener("DOMContentLoaded", () => {
             if (response.ok) {
                 score.innerHTML = json.score;
             } else {
-               window.alert("Error Occurred. Please Try Again.")
+               errorDiv.innerHTML = "Broken Button!"
             }
 
         }
@@ -47,7 +54,7 @@ window.addEventListener("DOMContentLoaded", () => {
         commentDiv.setAttribute("class", "cat-comments");
         let deleteBtn = document.createElement("button");
         deleteBtn.innerHTML = "Delete";
-        deleteBtn.setAttribute("id", "delete-btn");
+        deleteBtn.setAttribute("class", "delete-btn");
         commentDiv.appendChild(deleteBtn);
         catComments.appendChild(commentDiv);
     }
@@ -69,10 +76,18 @@ window.addEventListener("DOMContentLoaded", () => {
          if (response.ok) {
             displayComment(json.comments[json.comments.length - 1])
          } else {
-             window.alert("An error occurred. Try again.");
+            errorDiv.innerHTML = "Cannot post comment!"
          }
       }
        const input = document.getElementById("user-comment").value;
        addComment(input);
    })
+
+   let commentSection = document.querySelector(".comments")
+   commentSection.addEventListener("click", (e) => {
+      if (e.target.class === "delete-btn") {
+         console.log(e.currentTarget);
+      }
+   })
+
 })
