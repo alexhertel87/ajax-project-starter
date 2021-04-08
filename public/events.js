@@ -27,10 +27,7 @@ window.addEventListener("DOMContentLoaded", () => {
     scoreContainer.addEventListener("click", async (e) => {
         if (e.target.id === "upvote" || e.target.id === "downvote") {
             const response = await fetch(`/kitten/${e.target.id}`, {
-                method: "PATCH",
-                header: {
-                    "Content-Type": "application/json"
-                }
+                method: "PATCH"
             });
             const json = await response.json();
             if (response.ok) {
@@ -43,23 +40,39 @@ window.addEventListener("DOMContentLoaded", () => {
     })
    const form = document.querySelector(".comment-form")
 
+    function displayComment(comment) {
+        let catComments = document.querySelector(".comments");
+        let commentDiv = document.createElement("div");
+        commentDiv.innerHTML = comment;
+        commentDiv.setAttribute("class", "cat-comments");
+        let deleteBtn = document.createElement("button");
+        deleteBtn.innerHTML = "Delete";
+        deleteBtn.setAttribute("id", "delete-btn");
+        commentDiv.appendChild(deleteBtn);
+        catComments.appendChild(commentDiv);
+    }
+
    form.addEventListener("submit", (e) => {
       e.preventDefault();
 
-      const updateComments = async function (comment) {
-         const comments = await fetch('/kitten/comments', {
+       const addComment = async function (comment) {
+         const response = await fetch('/kitten/comments', {
             method: "POST",
-            header: {
+            headers: {
                "Content-Type": 'application/json'
             },
             body: JSON.stringify({
                comment
             })
          })
-         const json = await response.json();
-         if (json.ok) {
-            addComment(json.comments)
+          const json = await response.json();
+         if (response.ok) {
+            displayComment(json.comments[json.comments.length - 1])
+         } else {
+             window.alert("An error occurred. Try again.");
          }
       }
+       const input = document.getElementById("user-comment").value;
+       addComment(input);
    })
 })
